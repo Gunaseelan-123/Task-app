@@ -1,0 +1,8 @@
+```gitignore id="v5k1n8"
+/vendor
+/node_modules
+/public/build
+/public/hot
+.env
+/storage/*.key
+```
