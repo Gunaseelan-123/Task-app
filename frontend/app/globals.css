@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-brand-sand text-brand-ink antialiased;
+  background-image:
+    radial-gradient(circle at top left, rgba(249, 115, 22, 0.14), transparent 28%),
+    linear-gradient(180deg, #fbf7f1 0%, #f6efe5 100%);
+}
+
+.container-shell {
+  @apply mx-auto w-[min(1280px,calc(100%-2rem))];
+}
+
+.glass-panel {
+  @apply rounded-[28px] border border-white/70 bg-white/85 shadow-card backdrop-blur;
+}
+
+.section-title {
+  @apply text-2xl font-bold tracking-tight text-brand-ink md:text-3xl;
+}
