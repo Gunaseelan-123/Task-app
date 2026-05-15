@@ -1,8 +1,14 @@
-```gitignore id="v5k1n8"
+
+Remove those lines completely.
+
+Your `.gitignore` should look EXACTLY like this:
+
+:::writing{variant="document" id="46281"}
+```gitignore id="x4m9p2"
 /vendor
 /node_modules
+/frontend/node_modules
 /public/build
 /public/hot
 .env
 /storage/*.key
-```
