@@ -43,8 +43,11 @@ class User extends Authenticatable
      public function getProfilePictureUrlAttribute(): ?string
     {
         if ($this->profile_picture) {
-            return Storage::disk('public')->url($this->profile_picture);
+            // Return a relative asset URL so the browser requests the same host/port
+            // as the current application (avoids mismatched APP_URL ports).
+            return asset('storage/'.$this->profile_picture);
         }
+
         return null;
     }
     public function addresses()

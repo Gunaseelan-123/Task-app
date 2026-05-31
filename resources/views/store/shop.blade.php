@@ -39,6 +39,9 @@
                     <div class="eyebrow">Curated catalog</div>
                     <h2>{{ $products->total() }} products found</h2>
                     <p class="section-subtitle">Smart filtering by category, price, rating, and sort order.</p>
+                    <p class="helper" style="margin-top:6px; font-size:13px; color:#6B7280;">
+                        Showing {{ $products->firstItem() ?? 0 }} to {{ $products->lastItem() ?? 0 }} of {{ $products->total() }} results
+                    </p>
                 </div>
             </div>
 
@@ -78,7 +81,9 @@
                 @endforelse
             </div>
 
-            <div style="margin-top:24px;">{{ $products->links() }}</div>
+            <div style="margin-top:24px;" class="d-flex justify-content-center">
+                {{ $products->withQueryString()->links('pagination::bootstrap-5') }}
+            </div>
         </section>
     </div>
 @endsection

@@ -18,7 +18,7 @@
                 <div class="profile-picture-section" style="margin-bottom: 24px; text-align: center;">
                     <div class="avatar-container" style="position: relative; display: inline-block;">
                         @if($user->profile_picture)
-                            <img src="{{ Storage::url($user->profile_picture) }}" 
+                            <img src="{{ $user->profile_picture_url }}" 
                                  alt="Profile Picture" 
                                  class="profile-img" 
                                  style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #ddd;">
@@ -29,7 +29,7 @@
                             </div>
                         @endif
                         
-                        <form action="{{ route('account.profile.picture.update') }}" 
+                                <form action="{{ route('account.profile.picture.update') }}" 
                               method="post" 
                               enctype="multipart/form-data" 
                               id="profile-picture-form" 
@@ -50,7 +50,7 @@
                         </form>
                         
                         @if($user->profile_picture)
-                            <form action="{{ route('account.profile.picture.remove') }}" 
+                            <form id="remove-picture-form" action="{{ route('account.profile.picture.remove') }}" 
                                   method="post" 
                                   style="position: absolute; top: 0; right: -10px;">
                                 @csrf
@@ -68,15 +68,26 @@
                     </p>
                 </div>
                 
-                <form action="{{ route('account.profile.update') }}" method="post" class="stack">
+                <form action="{{ route('account.profile.update') }}" method="post" class="stack" id="profile-form">
                     @csrf
                     @method('PATCH')
-                    <input class="field" type="text" name="name" value="{{ $user->name }}" placeholder="Full name">
-                    <input class="field" type="email" name="email" value="{{ $user->email }}" placeholder="Email address">
-                    <input class="field" type="text" name="phone" value="{{ $user->phone }}" placeholder="Phone number">
+
+                    @if ($errors->any())
+                        <div class="flash flash--error" style="margin-bottom: 16px; padding: 12px; background: #fee2e2; color: #991b1b; border-radius: 8px;">
+                            <ul style="margin: 0; padding-left: 20px;">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <input class="field" type="text" name="name" value="{{ old('name', $user->name) }}" placeholder="Full name">
+                    <input class="field" type="email" name="email" value="{{ old('email', $user->email) }}" placeholder="Email address">
+                    <input class="field" type="text" name="phone" value="{{ old('phone', $user->phone) }}" placeholder="Phone number">
                     <select class="field" name="preferred_otp_channel">
-                        <option value="email" @selected($user->preferred_otp_channel === 'email')>Email OTP</option>
-                        <option value="sms" @selected($user->preferred_otp_channel === 'sms')>SMS OTP</option>
+                        <option value="email" @selected(old('preferred_otp_channel', $user->preferred_otp_channel) === 'email')>Email OTP</option>
+                        <option value="sms" @selected(old('preferred_otp_channel', $user->preferred_otp_channel) === 'sms')>SMS OTP</option>
                     </select>
                     <label style="display:flex;gap:10px;align-items:center;">
                         <input type="checkbox" name="two_factor_enabled" value="1" @checked($user->two_factor_enabled)>

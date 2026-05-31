@@ -26,15 +26,21 @@ class AccountController extends Controller
 
     public function updateProfile(Request $request): RedirectResponse
     {
+        $user = $request->user();
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'phone' => ['nullable', 'string', 'max:20'],
             'preferred_otp_channel' => ['required', 'in:email,sms'],
             'two_factor_enabled' => ['nullable', 'boolean'],
         ]);
 
-        $request->user()->update([
-            ...$data,
+        $user->update([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'] ?? null,
+            'preferred_otp_channel' => $data['preferred_otp_channel'],
             'two_factor_enabled' => (bool) ($data['two_factor_enabled'] ?? false),
         ]);
 

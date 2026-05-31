@@ -69,6 +69,8 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/account', [AccountController::class, 'dashboard'])->name('account.dashboard');
     Route::patch('/account/profile', [AccountController::class, 'updateProfile'])->name('account.profile.update');
     Route::post('/account/logout-other-devices', [AccountController::class, 'logoutOtherDevices'])->name('account.logout-other-devices');
+    Route::patch('/account/profile-picture', [AccountController::class, 'updateProfilePicture'])->name('account.profile.picture.update');
+    Route::delete('/account/profile-picture', [AccountController::class, 'removeProfilePicture'])->name('account.profile.picture.remove');
 
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
     Route::post('/wishlist', [WishlistController::class, 'store'])->name('wishlist.store');
@@ -96,15 +98,4 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::post('/coupons', [AdminCouponController::class, 'store'])->name('coupons.store');
     Route::patch('/coupons/{coupon}', [AdminCouponController::class, 'update'])->name('coupons.update');
     Route::delete('/coupons/{coupon}', [AdminCouponController::class, 'destroy'])->name('coupons.destroy');
-});
-// Profile picture routes
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/account', [AccountController::class, 'dashboard'])->name('account.dashboard');
-    Route::patch('/account/profile', [AccountController::class, 'updateProfile'])->name('account.profile.update');
-    Route::post('/account/logout-other-devices', [AccountController::class, 'logoutOtherDevices'])->name('account.logout-other-devices');
-    
-    // Add these profile picture routes
-    Route::patch('/account/profile-picture', [AccountController::class, 'updateProfilePicture'])->name('account.profile.picture.update');
-    Route::delete('/account/profile-picture', [AccountController::class, 'removeProfilePicture'])->name('account.profile.picture.remove');
 }); 

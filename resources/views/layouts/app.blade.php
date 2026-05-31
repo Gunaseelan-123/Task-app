@@ -9,6 +9,8 @@
     
     {{-- Add Font Awesome or any icon library for icons --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {{-- Optional: Bootstrap for pagination/UI components (loaded from CDN) --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUa6mY5Y2J6Q6b6j2QZf0T3Q5h5QZ6a0Vq0Q5s6z5w6Q5e6r" crossorigin="anonymous">
 </head>
 <body>
     <div class="utility-bar">
@@ -52,7 +54,7 @@
                     <div class="profile-dropdown" id="profileDropdown">
                         <button class="profile-trigger" onclick="toggleDropdown()">
                             @if(auth()->user()->profile_picture)
-                                <img src="{{ Storage::url(auth()->user()->profile_picture) }}" 
+                                <img src="{{ auth()->user()->profile_picture_url }}" 
                                      alt="{{ auth()->user()->name }}" 
                                      class="profile-avatar">
                             @else
