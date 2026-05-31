@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Address;
 use App\Models\Coupon;
+use App\Models\Order;
 use App\Services\CartService;
 use App\Services\CheckoutService;
 use Illuminate\Http\RedirectResponse;
@@ -54,7 +55,7 @@ class CheckoutController extends Controller
     {
         $data = $request->validate([
             'address_id' => ['required', 'exists:addresses,id'],
-            'payment_method' => ['required', 'in:cod,card,upi'],
+            'payment_method' => ['required', 'in:'.implode(',', Order::allowedPaymentMethods())],
             'coupon_code' => ['nullable', 'string', 'max:40'],
             'notes' => ['nullable', 'string', 'max:500'],
         ]);

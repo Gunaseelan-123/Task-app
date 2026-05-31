@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    public const PAYMENT_METHOD_OPTIONS = [
+        'cod' => 'Cash on delivery',
+        'card' => 'Credit or debit card',
+        'upi' => 'UPI',
+    ];
+
     protected $fillable = [
         'user_id',
         'address_id',
@@ -49,5 +55,15 @@ class Order extends Model
     public function address()
     {
         return $this->belongsTo(Address::class);
+    }
+
+    public static function paymentMethodOptions(): array
+    {
+        return self::PAYMENT_METHOD_OPTIONS;
+    }
+
+    public static function allowedPaymentMethods(): array
+    {
+        return array_keys(self::PAYMENT_METHOD_OPTIONS);
     }
 }

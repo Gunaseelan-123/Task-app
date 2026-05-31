@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Address;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\WishlistItem;
@@ -102,7 +103,7 @@ class CommerceController extends Controller
     {
         $data = $request->validate([
             'address_id' => ['required', 'integer', 'exists:addresses,id'],
-            'payment_method' => ['required', 'in:cod,stripe,razorpay'],
+            'payment_method' => ['required', 'in:'.implode(',', Order::allowedPaymentMethods())],
         ]);
 
         $cart = Cart::query()->with('items.product')->where('user_id', $request->user()->id)->firstOrFail();
@@ -132,6 +133,9 @@ class CommerceController extends Controller
             'product_id' => $product->id,
             'is_verified_purchase' => true,
         ]);
+
+        $product->rating = round((float) $product->reviews()->avg('rating'), 1);
+        $product->save();
 
         return response()->json($review, 201);
     }

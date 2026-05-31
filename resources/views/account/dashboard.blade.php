@@ -140,7 +140,9 @@
                     @forelse($user->orders->take(5) as $order)
                         <div class="panel" style="padding:16px;">
                             <strong>{{ $order->order_number }}</strong>
-                            <div class="helper">{{ ucfirst($order->status) }} | Tracking {{ $order->tracking_number ?: 'Pending' }}</div>
+                            <div class="helper">
+                            {{ ucfirst($order->status) }} | {{ \App\Models\Order::paymentMethodOptions()[$order->payment_method] ?? ucfirst($order->payment_method) }} | Tracking {{ $order->tracking_number ?: 'Pending' }}
+                        </div>
                             <div class="price"><span>Rs. {{ number_format($order->grand_total, 2) }}</span></div>
                         </div>
                     @empty

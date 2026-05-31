@@ -7,13 +7,14 @@
     <section class="table-card">
         <div class="table-wrap">
             <table>
-                <thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Tracking</th><th>Update</th></tr></thead>
+                <thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Payment</th><th>Tracking</th><th>Update</th></tr></thead>
                 <tbody>
                 @foreach($orders as $order)
                     <tr>
                         <td>{{ $order->order_number }}<br><span class="helper">{{ ucfirst($order->status) }}</span></td>
                         <td>{{ $order->user?->name ?? 'Guest' }}</td>
                         <td>Rs. {{ number_format($order->grand_total, 2) }}</td>
+                        <td>{{ \App\Models\Order::paymentMethodOptions()[$order->payment_method] ?? ucfirst($order->payment_method) }}</td>
                         <td>{{ $order->tracking_number ?: 'Pending' }}</td>
                         <td>
                             <form method="post" action="{{ route('admin.orders.update', $order) }}" class="stack">

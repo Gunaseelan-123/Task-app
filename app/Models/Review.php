@@ -17,7 +17,10 @@ class Review extends Model
 
     protected function casts(): array
     {
-        return ['is_verified_purchase' => 'boolean'];
+        return [
+            'rating' => 'integer',
+            'is_verified_purchase' => 'boolean',
+        ];
     }
 
     public function user()

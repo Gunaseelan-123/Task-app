@@ -18,10 +18,11 @@
                 <label>
                     <span class="label">Payment method</span>
                     <select class="field" name="payment_method">
-                        <option value="cod">Cash on delivery</option>
-                        <option value="card">Credit or debit card</option>
-                        <option value="upi">UPI</option>
+                        @foreach(\App\Models\Order::paymentMethodOptions() as $method => $label)
+                            <option value="{{ $method }}" @selected(old('payment_method') === $method)>{{ $label }}</option>
+                        @endforeach
                     </select>
+                    <p class="helper">Select a payment method. Card and UPI payments are processed instantly.</p>
                 </label>
                 <label>
                     <span class="label">Coupon</span>

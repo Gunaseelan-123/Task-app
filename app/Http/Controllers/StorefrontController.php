@@ -44,6 +44,29 @@ class StorefrontController extends Controller
         return view('store.product', compact('product', 'relatedProducts', 'cart'));
     }
 
+    public function submitReview(Request $request, Product $product)
+    {
+        $data = $request->validate([
+            'rating' => ['required', 'integer', 'between:1,5'],
+            'title' => ['nullable', 'string', 'max:120'],
+            'body' => ['nullable', 'string'],
+        ]);
+
+        $product->reviews()->create([
+            'user_id' => $request->user()->id,
+            'rating' => $data['rating'],
+            'title' => $data['title'] ?? null,
+            'body' => $data['body'] ?? null,
+            'is_verified_purchase' => true,
+        ]);
+
+        $product->rating = round((float) $product->reviews()->avg('rating'), 1);
+        $product->save();
+
+        return redirect()->route('products.show', $product)
+            ->with('success', 'Thanks for your review! Your rating has been added.');
+    }
+
     public function searchSuggestions(Request $request)
     {
         $request->validate([

@@ -28,7 +28,7 @@
     </section>
 
     <section class="admin-grid" style="margin-top:24px;">
-        <article class="table-card">
+        <article class="table-card">a
             <h3>Quick actions</h3>
             <div class="stack">
                 <div class="panel" style="padding:16px;">

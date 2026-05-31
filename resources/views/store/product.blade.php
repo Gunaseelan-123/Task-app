@@ -42,6 +42,51 @@
             <section class="section">
                 <div class="eyebrow">Ratings and reviews</div>
                 <h2>What customers say</h2>
+                <p class="helper">{{ $product->reviews->count() }} review{{ $product->reviews->count() === 1 ? '' : 's' }} · {{ number_format($product->rating, 1) }}/5 average</p>
+
+                @auth
+                    <form action="{{ route('products.reviews.store', $product) }}" method="post" class="panel" style="padding:20px;margin-bottom:18px;">
+                        @csrf
+                        @if ($errors->any())
+                            <div class="flash flash--error" style="margin-bottom:16px;">
+                                <ul style="margin:0;padding-left:18px;">
+                                    @foreach ($errors->all() as $message)
+                                        <li>{{ $message }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        <div class="field-row">
+                            <label class="field">
+                                <span class="label">Rating</span>
+                                <select name="rating" class="field" required>
+                                    <option value="">Choose a rating</option>
+                                    @foreach(range(5, 1) as $star)
+                                        <option value="{{ $star }}" @selected(old('rating') == $star)>{{ $star }} star{{ $star === 1 ? '' : 's' }}</option>
+                                    @endforeach
+                                </select>
+                            </label>
+                        </div>
+
+                        <label>
+                            <span class="label">Title</span>
+                            <input class="field" type="text" name="title" maxlength="120" value="{{ old('title') }}" placeholder="Short summary of your experience">
+                        </label>
+
+                        <label>
+                            <span class="label">Review</span>
+                            <textarea class="field" name="body" rows="4" placeholder="Tell other shoppers what you liked or what could improve">{{ old('body') }}</textarea>
+                        </label>
+
+                        <button class="primary-btn" type="submit">Submit review</button>
+                    </form>
+                @else
+                    <article class="review-card">
+                        <strong>Share your experience</strong>
+                        <p class="helper">Please <a href="{{ route('login') }}">log in</a> to post a review.</p>
+                    </article>
+                @endauth
+
                 <div class="review-list">
                     @forelse($product->reviews as $review)
                         <article class="review-card">
