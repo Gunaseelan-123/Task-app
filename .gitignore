@@ -1,14 +1,21 @@
-
-Remove those lines completely.
-
-Your `.gitignore` should look EXACTLY like this:
-
-:::writing{variant="document" id="46281"}
-```gitignore id="x4m9p2"
 /vendor
 /node_modules
 /frontend/node_modules
 /public/build
 /public/hot
 .env
-/storage/*.keytask/
+/.env.backup
+/.phpunit.result.cache
+/storage/*.key
+/storage/app/public
+/public/storage
+/node_modules
+/npm-debug.log*
+/yarn-debug.log*
+/yarn-error.log*
+/pnpm-debug.log*
+/.vscode
+/.idea
+/.history
+/.phpunit.result.cache
+task/
