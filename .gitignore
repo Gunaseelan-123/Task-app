@@ -11,4 +11,4 @@ Your `.gitignore` should look EXACTLY like this:
 /public/build
 /public/hot
 .env
-/storage/*.key
+/storage/*.keytask/
