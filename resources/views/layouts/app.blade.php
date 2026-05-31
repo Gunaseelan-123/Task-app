@@ -47,6 +47,10 @@
             <nav class="header-actions">
                 <a href="{{ route('shop') }}" class="ghost-btn">Shop</a>
                 @auth
+                    <!-- @php $isAdmin = trim(strtolower(auth()->user()->role ?? '')) === 'admin'; @endphp -->
+                    <!-- @if($isAdmin) -->
+                        <a href="{{ route('admin.dashboard') }}" class="ghost-btn">Admin</a>
+                    <!-- @endif -->
                     <a href="{{ route('wishlist.index') }}" class="ghost-btn">Wishlist</a>
                     <a href="{{ route('cart.index') }}" class="ghost-btn">Cart</a>
                     
@@ -76,6 +80,13 @@
                                 <i class="fas fa-user-circle"></i>
                                 <span>My Account</span>
                             </a>
+                            
+                            <!-- @if($isAdmin) -->
+                                <a href="{{ route('admin.dashboard') }}" class="dropdown-item">
+                                    <i class="fas fa-tools"></i>
+                                    <span>Admin</span>
+                                </a>
+                            <!-- @endif -->
                             
                             <a href="{{ route('account.dashboard') }}#orders" class="dropdown-item">
                                 <i class="fas fa-shopping-bag"></i>

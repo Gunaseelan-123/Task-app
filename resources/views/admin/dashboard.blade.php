@@ -29,6 +29,24 @@
 
     <section class="admin-grid" style="margin-top:24px;">
         <article class="table-card">
+            <h3>Quick actions</h3>
+            <div class="stack">
+                <div class="panel" style="padding:16px;">
+                    <strong>Manage your products</strong>
+                    <div class="helper">Create, update, and delete products from the admin catalog.</div>
+                    <a href="{{ route('admin.products.index') }}" class="ghost-btn" style="margin-top:12px; display:inline-block;">Go to products</a>
+                </div>
+                <div class="panel" style="padding:16px;">
+                    <strong>Create a new product</strong>
+                    <div class="helper">Use the create product form to add inventory directly.</div>
+                    <a href="{{ route('admin.products.create') }}" class="ghost-btn" style="margin-top:12px; display:inline-block;">Create product</a>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section class="admin-grid" style="margin-top:24px;">
+        <article class="table-card">
             <h3>Latest orders</h3>
             <div class="table-wrap">
                 <table>
