@@ -68,6 +68,8 @@ class CheckoutController extends Controller
 
         $order = $this->checkoutService->placeOrder($cart, $address, $data['payment_method'], $coupon, $data['notes'] ?? null);
 
-        return redirect()->route('account.dashboard')->with('success', 'Order placed successfully. Tracking: '.$order->tracking_number);
+        return redirect()
+            ->route('account.dashboard')
+            ->with('success', 'Your order has been placed successfully! Tracking number: '.$order->tracking_number);
     }
 }

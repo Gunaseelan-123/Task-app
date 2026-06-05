@@ -760,12 +760,35 @@ th {
 }
 
 /* Flash Messages */
+.flash-container {
+    display: flex;
+    justify-content: center;
+}
+
 .flash {
-    margin: 16px 0;
-    padding: 16px 20px;
-    border-radius: 24px;
+    position: relative;
+    margin: 12px 0;
+    padding: 12px 18px;
+    border-radius: 18px;
     border: 1px solid var(--line);
-    animation: slideDown 0.3s ease;
+    animation: slideDown 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    width: min(100%, 760px);
+    box-shadow: 0 10px 30px rgba(16, 24, 40, 0.06);
+}
+
+.flash__close {
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    align-self: start;
 }
 
 .flash--success {

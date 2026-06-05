@@ -28,7 +28,7 @@
     </section>
 
     <section class="admin-grid" style="margin-top:24px;">
-        <article class="table-card">a
+        <article class="table-card">
             <h3>Quick actions</h3>
             <div class="stack">
                 <div class="panel" style="padding:16px;">
@@ -41,7 +41,31 @@
                     <div class="helper">Use the create product form to add inventory directly.</div>
                     <a href="{{ route('admin.products.create') }}" class="ghost-btn" style="margin-top:12px; display:inline-block;">Create product</a>
                 </div>
+                <div class="panel" style="padding:16px;">
+                    <strong>Manage customers</strong>
+                    <div class="helper">Review customer accounts and update user roles.</div>
+                    <a href="{{ route('admin.users.index') }}" class="ghost-btn" style="margin-top:12px; display:inline-block;">View customers</a>
+                </div>
             </div>
+        </article>
+    </section>
+
+    <section class="metrics-grid" style="margin-top:24px;">
+        <article class="metric-card">
+            <div class="helper">Last 30d Revenue</div>
+            <h3>Rs. {{ number_format($salesSummary['revenue_last_30_days'], 2) }}</h3>
+        </article>
+        <article class="metric-card">
+            <div class="helper">Last 30d Orders</div>
+            <h3>{{ $salesSummary['orders_last_30_days'] }}</h3>
+        </article>
+        <article class="metric-card">
+            <div class="helper">Average order value</div>
+            <h3>Rs. {{ number_format($salesSummary['average_order_value'], 2) }}</h3>
+        </article>
+        <article class="metric-card">
+            <div class="helper">Low stock SKUs</div>
+            <h3>{{ $stats['low_stock'] }}</h3>
         </article>
     </section>
 
@@ -84,6 +108,18 @@
                     <div class="panel" style="padding:16px;">
                         <strong>{{ ucfirst($label) }}</strong>
                         <div class="helper">{{ $value }} active records</div>
+                    </div>
+                @endforeach
+            </div>
+        </article>
+
+        <article class="table-card">
+            <h3>Payment mix</h3>
+            <div class="stack">
+                @foreach($salesByPayment as $method => $total)
+                    <div class="panel" style="padding:16px;">
+                        <strong>{{ ucfirst($method) }}</strong>
+                        <div class="helper">Rs. {{ number_format($total, 2) }}</div>
                     </div>
                 @endforeach
             </div>

@@ -130,14 +130,20 @@
     </header>
 
     @if (session('success'))
-        <div class="shell">
-            <div class="flash flash--success">{{ session('success') }}</div>
+        <div class="shell flash-container">
+            <div class="flash flash--success" role="status" data-auto-dismiss>
+                <span>{{ session('success') }}</span>
+                <button type="button" class="flash__close" aria-label="Dismiss notification">×</button>
+            </div>
         </div>
     @endif
 
     @if (session('status'))
-        <div class="shell">
-            <div class="flash flash--info">{{ session('status') }}</div>
+        <div class="shell flash-container">
+            <div class="flash flash--info" role="status" data-auto-dismiss>
+                <span>{{ session('status') }}</span>
+                <button type="button" class="flash__close" aria-label="Dismiss notification">×</button>
+            </div>
         </div>
     @endif
 
@@ -168,6 +174,14 @@
             const dropdown = document.getElementById('profileDropdown');
             dropdown.classList.toggle('active');
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.flash__close').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    this.closest('.flash')?.remove();
+                });
+            });
+        });
         
         // Close dropdown when clicking outside
         document.addEventListener('click', function(event) {
