@@ -6,6 +6,7 @@ use App\Models\LoginAlert;
 use App\Models\OtpChallenge;
 use App\Models\User;
 use App\Notifications\LoginAlertNotification;
+use App\Notifications\AccountCreatedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -62,19 +63,20 @@ class AuthController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:100'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'phone' => ['nullable', 'string', 'max:20'],
-            'password' => ['required', 'string', 'min:4', 'confirmed'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'phone' => ['required', 'digits:10'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-         $user = User::create([
-        'name' => $data['name'],
-        'email' => $data['email'],
-        'phone' => $data['phone'],
-        'password' => $data['password'], // IMPORTANT
-        'status' => 'active',
-        'role' => 'user',
-    ]);
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'],
+            'password' => $data['password'],
+            'status' => 'active',
+            'role' => 'user',
+        ]);
+        $user->notify(new AccountCreatedNotification());
         Auth::login($user);
         $request->session()->regenerate();
         return redirect()->route('home')->with('success', 'Your account is ready.');

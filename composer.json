@@ -34,9 +34,10 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
         ],
+        "serve-sqlite": "php -d extension=pdo_sqlite -d extension=sqlite3 artisan serve",
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently \"php artisan serve\" \"npm run dev\" --names=server,vite"
+            "npx concurrently \"php -d extension=pdo_sqlite -d extension=sqlite3 artisan serve\" \"npm run dev\" --names=server,vite"
         ],
         "test": [
             "@php artisan test"

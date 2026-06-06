@@ -81,9 +81,60 @@
                 @endforelse
             </div>
 
-            <div style="margin-top:24px;" class="d-flex justify-content-center">
-                {{ $products->withQueryString()->links('pagination::bootstrap-5') }}
-            </div>
+            @if($products->hasPages())
+                <nav class="pagination-container" aria-label="Product pagination">
+                    <ul class="pagination-list">
+                        <li class="pagination-item {{ $products->onFirstPage() ? 'disabled' : '' }}">
+                            @if($products->onFirstPage())
+                                <span class="pagination-link">« Previous</span>
+                            @else
+                                <a class="pagination-link" href="{{ $products->previousPageUrl() }}">« Previous</a>
+                            @endif
+                        </li>
+
+                        @php
+                            $start = max(1, $products->currentPage() - 2);
+                            $end = min($products->lastPage(), $products->currentPage() + 2);
+                        @endphp
+
+                        @if($start > 1)
+                            <li class="pagination-item">
+                                <a class="pagination-link" href="{{ $products->url(1) }}">1</a>
+                            </li>
+                            @if($start > 2)
+                                <li class="pagination-item disabled"><span class="pagination-link">…</span></li>
+                            @endif
+                        @endif
+
+                        @for($page = $start; $page <= $end; $page++)
+                            <li class="pagination-item {{ $page === $products->currentPage() ? 'active' : '' }}">
+                                @if($page === $products->currentPage())
+                                    <span class="pagination-link">{{ $page }}</span>
+                                @else
+                                    <a class="pagination-link" href="{{ $products->url($page) }}">{{ $page }}</a>
+                                @endif
+                            </li>
+                        @endfor
+
+                        @if($end < $products->lastPage())
+                            @if($end < $products->lastPage() - 1)
+                                <li class="pagination-item disabled"><span class="pagination-link">…</span></li>
+                            @endif
+                            <li class="pagination-item">
+                                <a class="pagination-link" href="{{ $products->url($products->lastPage()) }}">{{ $products->lastPage() }}</a>
+                            </li>
+                        @endif
+
+                        <li class="pagination-item {{ ! $products->hasMorePages() ? 'disabled' : '' }}">
+                            @if(! $products->hasMorePages())
+                                <span class="pagination-link">Next »</span>
+                            @else
+                                <a class="pagination-link" href="{{ $products->nextPageUrl() }}">Next »</a>
+                            @endif
+                        </li>
+                    </ul>
+                </nav>
+            @endif
         </section>
     </div>
 @endsection

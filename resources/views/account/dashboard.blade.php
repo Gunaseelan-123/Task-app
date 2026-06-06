@@ -95,6 +95,25 @@
                     </label>
                     <button class="primary-btn" type="submit">Save account</button>
                 </form>
+
+                <div style="margin-top:12px;">
+                    <form action="{{ route('account.otp.send') }}" method="post" style="display:flex;gap:8px;align-items:center;margin-top:8px;">
+                        @csrf
+                        <input type="hidden" name="type" value="verify_phone">
+                        <select name="channel" class="field" style="width:140px;">
+                            <option value="email" @selected(old('preferred_otp_channel', $user->preferred_otp_channel) === 'email')>Email</option>
+                            <option value="sms" @selected(old('preferred_otp_channel', $user->preferred_otp_channel) === 'sms')>SMS</option>
+                        </select>
+                        <button class="ghost-btn" type="submit">Send phone verification OTP</button>
+                    </form>
+
+                    <form action="{{ route('account.otp.verify') }}" method="post" style="display:flex;gap:8px;align-items:center;margin-top:8px;">
+                        @csrf
+                        <input type="hidden" name="type" value="verify_phone">
+                        <input class="field" type="text" name="code" maxlength="6" placeholder="Enter OTP code">
+                        <button class="primary-btn" type="submit">Verify OTP</button>
+                    </form>
+                </div>
             </article>
 
             <article class="table-card">

@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use App\Models\OtpChallenge;
+use App\Notifications\OtpCodeNotification;
 use Illuminate\View\View;
 
 class AccountController extends Controller
@@ -45,6 +48,81 @@ class AccountController extends Controller
         ]);
 
         return back()->with('success', 'Profile and security preferences updated.');
+    }
+
+    public function sendOtp(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'channel' => ['required', 'in:email,sms'],
+            'type' => ['nullable', 'string'],
+        ]);
+
+        $user = $request->user();
+        $type = $data['type'] ?? 'verify_phone';
+
+        // remove existing pending challenges of same type
+        OtpChallenge::query()
+            ->where('user_id', $user->id)
+            ->where('type', $type)
+            ->whereNull('verified_at')
+            ->delete();
+
+        $plainCode = (string) random_int(100000, 999999);
+
+        $challenge = OtpChallenge::query()->create([
+            'user_id' => $user->id,
+            'type' => $type,
+            'channel' => $data['channel'],
+            'code' => Hash::make($plainCode),
+            'expires_at' => now()->addMinutes(10),
+            'ip_address' => $request->ip(),
+            'user_agent' => (string) $request->userAgent(),
+        ]);
+
+        $challenge->setAttribute('plain_code', $plainCode);
+
+        if ($data['channel'] === 'email') {
+            $user->notify(new OtpCodeNotification($plainCode, 'email', $type));
+        } else {
+            Log::info('SMS OTP for user '.$user->id.' ('.$user->email.'): '.$plainCode.' via '.$type);
+        }
+
+        return back()->with('status', 'OTP sent. Demo code: '.$plainCode);
+    }
+
+    public function verifyOtp(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'code' => ['required', 'digits:6'],
+            'type' => ['nullable', 'string'],
+        ]);
+
+        $user = $request->user();
+        $type = $data['type'] ?? 'verify_phone';
+
+        $challenge = OtpChallenge::query()
+            ->where('user_id', $user->id)
+            ->where('type', $type)
+            ->whereNull('verified_at')
+            ->orderByDesc('created_at')
+            ->firstOrFail();
+
+        if ($challenge->expires_at->isPast() || ! Hash::check($request->string('code')->toString(), $challenge->getRawOriginal('code'))) {
+            return back()->withErrors(['code' => 'The OTP is invalid or expired.']);
+        }
+
+        $challenge->update(['verified_at' => now()]);
+
+        // Apply effects for common types
+        if ($type === 'verify_phone') {
+            $user->forceFill(['phone_verified_at' => now()])->save();
+        }
+
+        if ($type === 'enable_2fa') {
+            $user->forceFill(['two_factor_enabled' => true])->save();
+        }
+
+        return back()->with('success', 'OTP verified successfully.');
     }
 
     public function logoutOtherDevices(Request $request): RedirectResponse

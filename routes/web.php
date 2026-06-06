@@ -73,6 +73,10 @@ Route::middleware('auth')->group(function (): void {
     Route::patch('/account/profile-picture', [AccountController::class, 'updateProfilePicture'])->name('account.profile.picture.update');
     Route::delete('/account/profile-picture', [AccountController::class, 'removeProfilePicture'])->name('account.profile.picture.remove');
 
+    // OTP endpoints for profile/security actions
+    Route::post('/account/otp/send', [AccountController::class, 'sendOtp'])->name('account.otp.send');
+    Route::post('/account/otp/verify', [AccountController::class, 'verifyOtp'])->name('account.otp.verify');
+
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
     Route::post('/wishlist', [WishlistController::class, 'store'])->name('wishlist.store');
     Route::delete('/wishlist/{wishlist}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');

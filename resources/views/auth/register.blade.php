@@ -21,18 +21,29 @@
             @csrf
 
             <div class="field-row">
-                <input class="field" type="text" name="name"
-                    value="{{ old('name') }}"
-                    placeholder="Full name" required>
+                <div>
+                    <input class="field" type="text" name="name"
+                        value="{{ old('name') }}"
+                        placeholder="Full name" required>
+                    @error('name') <div class="error-text">{{ $message }}</div> @enderror
+                </div>
 
-                <input class="field" type="text" name="phone"
-                    value="{{ old('phone') }}"
-                    placeholder="Phone number">
+                <div>
+                    <input class="field" type="tel" name="phone"
+                        value="{{ old('phone') }}"
+                        placeholder="Phone number"
+                        maxlength="10"
+                        inputmode="numeric"
+                        pattern="\d{10}"
+                        required>
+                    @error('phone') <div class="error-text">{{ $message }}</div> @enderror
+                </div>
             </div>
 
             <input class="field" type="email" name="email"
                 value="{{ old('email') }}"
                 placeholder="Email address" required>
+            @error('email') <div class="error-text">{{ $message }}</div> @enderror
 
             <div class="field-row">
                 <input class="field" type="password"
