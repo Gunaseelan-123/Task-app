@@ -13,13 +13,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUa6mY5Y2J6Q6b6j2QZf0T3Q5h5QZ6a0Vq0Q5s6z5w6Q5e6r" crossorigin="anonymous">
 </head>
 <body>
-    <div class="utility-bar">
-        <div class="shell utility-bar__inner">
-            <span>Free shipping above Rs. 1,500</span>
-            <span>OTP login, 2FA, session control, and admin analytics included</span>
-        </div>
-    </div>
-
     <header class="site-header">
         <div class="shell header-grid">
             <a href="{{ route('home') }}" class="brand-lockup">
@@ -155,15 +148,33 @@
         <div class="shell footer-grid">
             <div>
                 <h3>Northstar Commerce</h3>
-                <p>Blade-driven eCommerce with secure authentication, reusable admin modules, and a polished storefront.</p>
+                <p>Premium ecommerce for Chennai shoppers. We sell curated electronics, fashion, audio, and mobile accessories with secure checkout and fast order processing.</p>
             </div>
             <div>
-                <h4>Stack</h4>
-                <p>Laravel 12, MySQL, Sanctum API, Vite, Blade, Axios.</p>
+                <h4>Products</h4>
+                <ul class="footer-links">
+                    <li>Smartphones & accessories</li>
+                    <li>Laptops & tablets</li>
+                    <li>Audio gear & headphones</li>
+                    <li>Fashion & lifestyle</li>
+                    <li>Home tech & gadgets</li>
+                </ul>
             </div>
             <div>
-                <h4>Capabilities</h4>
-                <p>OTP login, 2FA, wishlist, persistent cart, coupons, session management, order tracking.</p>
+                <h4>What we sell</h4>
+                <ul class="footer-links">
+                    <li>Premium phones and cases</li>
+                    <li>Performance gaming laptops</li>
+                    <li>Wireless speakers and earbuds</li>
+                    <li>Smart watches and wearables</li>
+                    <li>Fashion accessories and apparel</li>
+                </ul>
+            </div>
+            <div>
+                <h4>Contact</h4>
+                <p>Mehta Nagar, Rajeshwari Street, First Floor, Aminjikarai, Chennai</p>
+                <p>Email: support@nexuscart.example</p>
+                <p>Phone: +91 98765 43210</p>
             </div>
         </div>
     </footer>

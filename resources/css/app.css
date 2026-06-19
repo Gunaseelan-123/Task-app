@@ -222,58 +222,6 @@ a {
     border-color: var(--brand);
 }
 
-.pagination-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 24px;
-}
-
-.pagination-list {
-    display: inline-flex;
-    gap: 8px;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    flex-wrap: wrap;
-}
-
-.pagination-item {
-    border-radius: 999px;
-    overflow: hidden;
-}
-
-.pagination-link,
-.pagination-link:visited {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 44px;
-    height: 44px;
-    padding: 0 14px;
-    border: 1px solid var(--line);
-    background: var(--surface);
-    color: var(--text);
-    font-weight: 600;
-    transition: var(--transition-smooth);
-}
-
-.pagination-item.active .pagination-link {
-    background: var(--brand);
-    color: white;
-    border-color: var(--brand);
-}
-
-.pagination-item.disabled .pagination-link,
-.pagination-item.disabled .pagination-link:hover {
-    pointer-events: none;
-    opacity: 0.6;
-    cursor: default;
-}
-
-.pagination-link:hover {
-    background: var(--surface-soft);
-}
-
 /* Profile Dropdown */
 .profile-dropdown {
     position: relative;
@@ -560,6 +508,66 @@ a {
     background: var(--surface-soft);
     color: var(--brand);
     margin-bottom: 12px;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.pagination-list {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pagination-item {
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.pagination-link,
+.pagination-link:visited {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 46px;
+    height: 46px;
+    padding: 0 16px;
+    color: var(--ink);
+    font-weight: 700;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    background: #ffffff;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.pagination-link:hover {
+    background: #eff6ff;
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+.pagination-item.active .pagination-link {
+    background: var(--brand);
+    color: #fff;
+    border-color: var(--brand);
+}
+
+.pagination-item.disabled .pagination-link,
+.pagination-item.disabled .pagination-link:hover {
+    pointer-events: none;
+    opacity: 0.55;
+    cursor: default;
+    background: #f8fafc;
+    border-color: rgba(148, 163, 184, 0.2);
+}
+
+.pagination-item.disabled .pagination-link {
+    color: #94a3b8;
 }
 
 .discount-chip {

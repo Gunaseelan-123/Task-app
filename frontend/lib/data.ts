@@ -16,31 +16,28 @@ export type Product = {
   sizes?: string[];
 };
 
-export const heroSlides = [
-  {
-    title: "Premium electronics, startup-speed checkout.",
-    subtitle: "Flash deals, sticky search, conversion-first merchandising, and ultra-clean shopping flows.",
-    cta: "Shop Electronics",
-    image: "https://placehold.co/1200x720/e8dfd3/17212b?text=Hero+Banner+1",
-  },
-  {
-    title: "Fashion and lifestyle with marketplace scale.",
-    subtitle: "Curated category tiles, slider-driven discovery, and product cards that feel retail-grade.",
-    cta: "Explore Fashion",
-    image: "https://placehold.co/1200x720/f2e6d6/17212b?text=Hero+Banner+2",
-  },
-];
+export function transformProduct(product: any): Product {
+  const image = product.images?.[0]?.path ?? product.primary_image ?? product.image ?? "https://placehold.co/900x900/f4efe5/17212b?text=Product";
+  const hoverImage = product.images?.[1]?.path ?? image;
 
-export const categories = [
-  { label: "Mobiles", icon: "Smartphone" },
-  { label: "Electronics", icon: "Laptop" },
-  { label: "Fashion", icon: "Shirt" },
-  { label: "Home", icon: "Lamp" },
-  { label: "Beauty", icon: "Sparkles" },
-  { label: "Appliances", icon: "Tv" },
-  { label: "Travel", icon: "Briefcase" },
-  { label: "Grocery", icon: "Package" },
-];
+  return {
+    id: product.id,
+    name: product.name,
+    slug: product.slug,
+    brand: product.brand ?? "Northstar",
+    price: Number(product.price ?? 0),
+    comparePrice: product.compare_price ? Number(product.compare_price) : undefined,
+    rating: Number(product.rating ?? 0),
+    reviews: Number(product.reviews_count ?? product.reviews?.length ?? 0),
+    image,
+    hoverImage,
+    badge: product.badge_text ?? product.badge ?? undefined,
+    category: product.category?.name ?? product.category ?? "General",
+    description: product.short_description ?? product.description ?? "",
+    colors: product.colors ?? product.color_options ?? undefined,
+    sizes: product.sizes ?? product.size_options ?? undefined,
+  };
+}
 
 export const products: Product[] = [
   {
@@ -107,4 +104,109 @@ export const products: Product[] = [
     description: "Refined cotton knit polo built for everyday wear with a luxe drape and modern collar.",
     sizes: ["S", "M", "L", "XL"],
   },
+  {
+    id: 5,
+    name: "Nova Active Running Shoes",
+    slug: "nova-active-running-shoes",
+    brand: "Nova",
+    price: 3999,
+    comparePrice: 4999,
+    rating: 4.5,
+    reviews: 312,
+    image: "https://placehold.co/900x900/dbe7f5/17212b?text=Running+Shoes",
+    hoverImage: "https://placehold.co/900x900/c7dbf0/17212b?text=Running+Shoes+Side",
+    badge: "20% off",
+    category: "Sportswear",
+    description: "Lightweight running shoes built for comfort and performance.",
+    sizes: ["6", "7", "8", "9", "10"],
+  },
+  {
+    id: 6,
+    name: "Luma Desk Lamp",
+    slug: "luma-desk-lamp",
+    brand: "Luma",
+    price: 2999,
+    rating: 4.3,
+    reviews: 128,
+    image: "https://placehold.co/900x900/e9f1dc/17212b?text=Desk+Lamp",
+    hoverImage: "https://placehold.co/900x900/d7e5ca/17212b?text=Desk+Lamp+Detail",
+    category: "Home",
+    description: "Minimal desk lighting with adjustable glow and modern styling.",
+  },
+  {
+    id: 7,
+    name: "Aster Bluetooth Speaker",
+    slug: "aster-bluetooth-speaker",
+    brand: "Aster",
+    price: 5499,
+    comparePrice: 6499,
+    rating: 4.6,
+    reviews: 284,
+    image: "https://placehold.co/900x900/efe4f7/17212b?text=Bluetooth+Speaker",
+    hoverImage: "https://placehold.co/900x900/e0d5f0/17212b?text=Speaker+Detail",
+    badge: "15% off",
+    category: "Audio",
+    description: "Portable speaker with deep bass, Bluetooth 5.2, and 10 hours of playback.",
+  },
+  {
+    id: 8,
+    name: "Vela Yoga Mat",
+    slug: "vela-yoga-mat",
+    brand: "Vela",
+    price: 2199,
+    rating: 4.4,
+    reviews: 198,
+    image: "https://placehold.co/900x900/e7f2ee/17212b?text=Yoga+Mat",
+    hoverImage: "https://placehold.co/900x900/d9e8dc/17212b?text=Yoga+Mat+Roll",
+    category: "Fitness",
+    description: "Cushioned yoga mat with textured grip and water-resistant finish.",
+  },
+  {
+    id: 9,
+    name: "Evermore Leather Wallet",
+    slug: "evermore-leather-wallet",
+    brand: "Evermore",
+    price: 1599,
+    rating: 4.7,
+    reviews: 94,
+    image: "https://placehold.co/900x900/f4e4dc/17212b?text=Leather+Wallet",
+    hoverImage: "https://placehold.co/900x900/e8dad0/17212b?text=Wallet+Open",
+    category: "Accessories",
+    description: "Slim leather wallet with multiple card slots and RFID protection.",
+  },
+  {
+    id: 10,
+    name: "Solstice Sunglasses",
+    slug: "solstice-sunglasses",
+    brand: "Solstice",
+    price: 2699,
+    rating: 4.3,
+    reviews: 164,
+    image: "https://placehold.co/900x900/eef3f7/17212b?text=Sunglasses",
+    hoverImage: "https://placehold.co/900x900/dfe7f0/17212b?text=Sunglasses+Side",
+    category: "Fashion",
+    description: "Polarized sunglasses with UV protection and lightweight frames.",
+  },
+];
+
+export function transformProducts(products: any[]): Product[] {
+  return products.map(transformProduct);
+}
+
+export const heroSlides = [
+  {
+    title: "Wireless headphones built for every playlist.",
+    subtitle: "Shop premium audio, fast shipping, and effortless checkout in a clean marketplace experience.",
+    cta: "Shop Headphones",
+    image: "https://placehold.co/1200x720/ebe6f2/17212b?text=Wireless+Headphones",
+  },
+];
+
+export const categories = [
+  { label: "Earphones", icon: "Headphones" },
+  { label: "Gadgets", icon: "Watch" },
+  { label: "Laptop", icon: "Laptop" },
+  { label: "Gaming", icon: "Gamepad" },
+  { label: "Audio", icon: "Speaker" },
+  { label: "Studio", icon: "Cpu" },
 ];

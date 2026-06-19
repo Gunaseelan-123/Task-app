@@ -1,6 +1,37 @@
 @extends('layouts.app', ['title' => 'Shop | Northstar'])
 
 @section('content')
+    <div class="page-shell">
+        <div class="hero-links">
+            @foreach($categories->take(4) as $category)
+                <a href="{{ route('shop', ['category' => $category->slug]) }}">{{ $category->name }}</a>
+            @endforeach
+        </div>
+
+        <section class="hero">
+            <div class="hero-copy">
+                <span class="hero-eyebrow">Marketplace-grade UX</span>
+                <h1>Buy premium essentials with the speed of a big marketplace.</h1>
+                <p class="hero-copy__text">Northstar pairs Laravel Blade with secure auth, smart search, flash deals, sticky commerce flows, and an admin stack ready for real operations.</p>
+                <div class="hero-actions">
+                    <a class="primary-btn" href="{{ route('shop') }}">Shop now</a>
+                    <a class="ghost-btn" href="{{ route('shop', ['sort' => 'rating']) }}">View architecture</a>
+                </div>
+            </div>
+
+            <div class="hero-panel">
+                <div class="hero-panel-pill">Flash deal live now</div>
+                <div class="hero-panel-copy">
+                    <h2>Flagship electronics, fashion picks, and same-day delivery promises.</h2>
+                    <p>Everything you need for high-conversion storefronts, shipped from a modern Laravel Blade commerce stack.</p>
+                </div>
+                <div class="hero-panel-countdown">
+                    <span>11h 14m 11s</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
     <div class="shop-layout">
         <aside class="filters">
             <div class="eyebrow">Filter products</div>
@@ -59,6 +90,12 @@
                             <h3 class="product-title" style="margin-top:12px;">
                                 <a href="{{ route('products.show', $product) }}">{{ $product->name }}</a>
                             </h3>
+                            <div class="product-rating" style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                                @if($product->rating)
+                                    <span style="color:#f59e0b;font-weight:700;">★ {{ number_format($product->rating, 1) }}</span>
+                                @endif
+                                <span class="helper">{{ $product->reviews()->count() }} Reviews</span>
+                            </div>
                             <p class="product-meta">{{ $product->short_description }}</p>
                             <div class="price">
                                 <span>Rs. {{ number_format($product->price, 2) }}</span>
@@ -82,24 +119,30 @@
             </div>
 
             @if($products->hasPages())
+                @php
+                    $qp = request()->except('page');
+                    $paginator = $products->appends($qp);
+                    $start = max(1, $paginator->currentPage() - 2);
+                    $end = min($paginator->lastPage(), $paginator->currentPage() + 2);
+                @endphp
+
                 <nav class="pagination-container" aria-label="Product pagination">
+                    @php
+                        $qp = request()->except('page');
+                    @endphp
                     <ul class="pagination-list">
-                        <li class="pagination-item {{ $products->onFirstPage() ? 'disabled' : '' }}">
-                            @if($products->onFirstPage())
+                        @php $prev = max(1, $paginator->currentPage() - 1); @endphp
+                        <li class="pagination-item {{ $paginator->onFirstPage() ? 'disabled' : '' }}">
+                            @if($paginator->onFirstPage())
                                 <span class="pagination-link">« Previous</span>
                             @else
-                                <a class="pagination-link" href="{{ $products->previousPageUrl() }}">« Previous</a>
+                                <a class="pagination-link" href="{{ url()->current() . '?' . http_build_query(array_merge($qp, ['page' => $prev])) }}">« Previous</a>
                             @endif
                         </li>
 
-                        @php
-                            $start = max(1, $products->currentPage() - 2);
-                            $end = min($products->lastPage(), $products->currentPage() + 2);
-                        @endphp
-
                         @if($start > 1)
                             <li class="pagination-item">
-                                <a class="pagination-link" href="{{ $products->url(1) }}">1</a>
+                                <a class="pagination-link" href="{{ url()->current() . '?' . http_build_query(array_merge($qp, ['page' => 1])) }}">1</a>
                             </li>
                             @if($start > 2)
                                 <li class="pagination-item disabled"><span class="pagination-link">…</span></li>
@@ -107,29 +150,30 @@
                         @endif
 
                         @for($page = $start; $page <= $end; $page++)
-                            <li class="pagination-item {{ $page === $products->currentPage() ? 'active' : '' }}">
-                                @if($page === $products->currentPage())
+                            <li class="pagination-item {{ $page === $paginator->currentPage() ? 'active' : '' }}">
+                                @if($page === $paginator->currentPage())
                                     <span class="pagination-link">{{ $page }}</span>
                                 @else
-                                    <a class="pagination-link" href="{{ $products->url($page) }}">{{ $page }}</a>
+                                    <a class="pagination-link" href="{{ url()->current() . '?' . http_build_query(array_merge($qp, ['page' => $page])) }}">{{ $page }}</a>
                                 @endif
                             </li>
                         @endfor
 
-                        @if($end < $products->lastPage())
-                            @if($end < $products->lastPage() - 1)
+                        @if($end < $paginator->lastPage())
+                            @if($end < $paginator->lastPage() - 1)
                                 <li class="pagination-item disabled"><span class="pagination-link">…</span></li>
                             @endif
                             <li class="pagination-item">
-                                <a class="pagination-link" href="{{ $products->url($products->lastPage()) }}">{{ $products->lastPage() }}</a>
+                                <a class="pagination-link" href="{{ url()->current() . '?' . http_build_query(array_merge($qp, ['page' => $paginator->lastPage()])) }}">{{ $paginator->lastPage() }}</a>
                             </li>
                         @endif
 
-                        <li class="pagination-item {{ ! $products->hasMorePages() ? 'disabled' : '' }}">
-                            @if(! $products->hasMorePages())
+                        @php $next = min($paginator->lastPage(), $paginator->currentPage() + 1); @endphp
+                        <li class="pagination-item {{ ! $paginator->hasMorePages() ? 'disabled' : '' }}">
+                            @if(! $paginator->hasMorePages())
                                 <span class="pagination-link">Next »</span>
                             @else
-                                <a class="pagination-link" href="{{ $products->nextPageUrl() }}">Next »</a>
+                                <a class="pagination-link" href="{{ url()->current() . '?' . http_build_query(array_merge($qp, ['page' => $next])) }}">Next »</a>
                             @endif
                         </li>
                     </ul>

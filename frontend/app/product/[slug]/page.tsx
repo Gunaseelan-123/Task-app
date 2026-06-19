@@ -1,10 +1,14 @@
 import Image from "next/image";
 import { Star, Truck } from "lucide-react";
-import { products } from "@/lib/data";
+import { apiGet } from "@/lib/api";
+import { products, transformProduct, type Product } from "../../../lib/data";
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const product = products.find((item) => item.slug === slug) ?? products[0];
+  const apiProduct = await apiGet<{ product?: any }>(`/products/${slug}`);
+  const product: Product = apiProduct?.product ? transformProduct(apiProduct.product) : products.find((item: Product) => item.slug === slug) ?? products[0];
+  const colorOptions = product.colors ?? ["Default"];
+  const sizeOptions = product.sizes ?? ["Standard"];
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1.1fr_.9fr]">

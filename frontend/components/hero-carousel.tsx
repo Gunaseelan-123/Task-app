@@ -8,7 +8,7 @@ export function HeroCarousel() {
     <section className="grid gap-6 lg:grid-cols-[1.1fr_.9fr]">
       <div className="glass-panel bg-hero-glow p-8 md:p-12">
         <div className="text-xs font-bold uppercase tracking-[0.24em] text-brand-accent">
-          Flipkart-level retail experience
+          Premium audio & modern shopping
         </div>
         <h1 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-brand-ink md:text-6xl">
           {activeSlide.title}
@@ -17,12 +17,23 @@ export function HeroCarousel() {
           {activeSlide.subtitle}
         </p>
         <div className="mt-8 flex flex-wrap gap-4">
-          <button className="rounded-full bg-brand px-6 py-4 text-sm font-bold text-white">
+          <button className="rounded-full bg-brand px-6 py-4 text-sm font-bold text-white shadow-lg shadow-brand/10">
             {activeSlide.cta}
           </button>
           <button className="rounded-full border border-black/10 bg-white px-6 py-4 text-sm font-bold text-brand-ink">
-            View offers
+            Browse categories
           </button>
+        </div>
+        <div className="mt-10 grid gap-3 sm:grid-cols-3">
+          {[
+            "Fast delivery",
+            "Free returns",
+            "Expert support",
+          ].map((label) => (
+            <div key={label} className="rounded-3xl border border-black/5 bg-white/80 px-4 py-3 text-sm font-semibold text-slate-700">
+              {label}
+            </div>
+          ))}
         </div>
       </div>
 
