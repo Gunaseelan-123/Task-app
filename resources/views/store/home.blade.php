@@ -2,52 +2,75 @@
 
 @section('content')
     <section class="hero">
-        <div>
-            <div class="eyebrow">Marketplace-grade UX</div>
-            <h1>Buy premium essentials with the speed of a big marketplace.</h1>
-            <p>Northstar pairs Laravel Blade with secure auth, smart search, flash deals, sticky commerce flows, and an admin stack ready for real operations.</p>
-            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;">
-                <a class="primary-btn" href="{{ route('shop') }}">Shop now</a>
-                <a class="ghost-btn" href="{{ route('architecture') }}">View architecture</a>
+        <div class="hero-copy">
+            <div class="eyebrow">Premium audio and lifestyle</div>
+            <h1>Shop bold headphones, sleek gadgets, and curated essentials.</h1>
+            <p>Northstar delivers a modern storefront experience with fast checkout, smart product discovery, and live launch offers built in Blade.</p>
+            <div class="hero-actions">
+                <a class="primary-btn" href="{{ route('shop') }}">Shop collection</a>
+                <a class="ghost-btn" href="{{ route('architecture') }}">See architecture</a>
+            </div>
+
+            <div class="hero-stat-grid">
+                <div class="hero-stat">
+                    <strong>Free shipping</strong>
+                    <span>On all orders</span>
+                </div>
+                <div class="hero-stat">
+                    <strong>Easy returns</strong>
+                    <span>30-day guarantee</span>
+                </div>
+                <div class="hero-stat">
+                    <strong>Secure checkout</strong>
+                    <span>Trusted payments</span>
+                </div>
             </div>
         </div>
 
         <div class="hero-banner">
-            <span class="hero-banner__badge">Flash deal live now</span>
-            <h2 style="font-size:2.4rem;line-height:1.05;margin:18px 0 10px;">Flagship electronics, fashion picks, and same-day delivery promises.</h2>
-            <p style="max-width:520px;color:rgba(255,255,255,0.78);">This storefront is built entirely inside Laravel with Blade views, JS interactions, and secure backend flows.</p>
+            <span class="hero-banner__badge">Launch event</span>
+            <h2>Discover premium sound with limited-time offers on headphones and audio gear.</h2>
+            <p>Our storefront combines marketplace polish with Laravel Blade performance for a beautiful shopping experience.</p>
             <div class="hero-banner__meta">
-                <div class="helper" style="color:rgba(255,255,255,0.68);">Deal refreshes in</div>
-                <strong data-countdown="{{ $flashDealEndsAt->toIso8601String() }}" style="display:block;font-size:1.6rem;margin-top:8px;">--</strong>
+                <div class="helper">Sale ends in</div>
+                <strong data-countdown="{{ $flashDealEndsAt->toIso8601String() }}">--</strong>
             </div>
         </div>
     </section>
 
     <section class="section">
+        <div class="section-head">
+            <div>
+                <div class="eyebrow">Featured categories</div>
+                <h2>Shop by collection</h2>
+                <p class="section-subtitle">Explore the top categories driving our best offers.</p>
+            </div>
+        </div>
+
         <div class="hero-strip">
             @foreach($categories->take(4) as $category)
-                <article class="panel" style="padding:20px;">
+                <article class="panel panel-category">
                     <div class="eyebrow">{{ str_pad((string) ($loop->iteration), 2, '0', STR_PAD_LEFT) }}</div>
                     <h3>{{ $category->name }}</h3>
                     <p class="section-subtitle">{{ $category->description }}</p>
-                    <a href="{{ route('shop', ['category' => $category->slug]) }}" class="ghost-btn">Explore</a>
+                    <a href="{{ route('shop', ['category' => $category->slug]) }}" class="ghost-btn">Browse</a>
                 </article>
             @endforeach
         </div>
     </section>
 
     @foreach ([
-        'Flash Deals' => $featuredProducts,
-        'Best of Electronics' => $bestElectronics,
+        'Launch Deals' => $featuredProducts,
+        'Top Electronics' => $bestElectronics,
         'Trending Now' => $trendingProducts,
-        'Fresh Arrivals' => $latestProducts,
+        'New Arrivals' => $latestProducts,
     ] as $label => $items)
         <section class="section">
             <div class="section-head">
                 <div>
                     <div class="eyebrow">{{ $label }}</div>
                     <h2>{{ $label }}</h2>
-                    <div class="section-subtitle">Premium product cards, hover CTAs, strike pricing, and rating-led browsing.</div>
+                    <div class="section-subtitle">Curated product picks, live markdowns, and best-selling accessories.</div>
                 </div>
                 <a href="{{ route('shop') }}" class="ghost-btn">View all</a>
             </div>

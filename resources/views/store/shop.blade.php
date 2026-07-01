@@ -11,22 +11,38 @@
         <section class="hero">
             <div class="hero-copy">
                 <span class="hero-eyebrow">Marketplace-grade UX</span>
-                <h1>Buy premium essentials with the speed of a big marketplace.</h1>
-                <p class="hero-copy__text">Northstar pairs Laravel Blade with secure auth, smart search, flash deals, sticky commerce flows, and an admin stack ready for real operations.</p>
+                <h1>Wireless headphone launch collection for premium audio.</h1>
+                <p class="hero-copy__text">Browse top audio accessories, curated gadgets, and fast delivery with a clean, conversion-first storefront experience.</p>
                 <div class="hero-actions">
-                    <a class="primary-btn" href="{{ route('shop') }}">Shop now</a>
-                    <a class="ghost-btn" href="{{ route('shop', ['sort' => 'rating']) }}">View architecture</a>
+                    <a class="primary-btn" href="{{ route('shop') }}">Shop by category</a>
+                    <a class="ghost-btn" href="{{ route('shop', ['sort' => 'rating']) }}">Best sellers</a>
+                </div>
+
+                <div class="hero-stat-grid">
+                    <div class="hero-stat">
+                        <strong>Free shipping</strong>
+                        <span>On all orders</span>
+                    </div>
+                    <div class="hero-stat">
+                        <strong>24/7 support</strong>
+                        <span>Ready for every shopper</span>
+                    </div>
+                    <div class="hero-stat">
+                        <strong>Secure checkout</strong>
+                        <span>Trusted payments</span>
+                    </div>
                 </div>
             </div>
 
             <div class="hero-panel">
                 <div class="hero-panel-pill">Flash deal live now</div>
                 <div class="hero-panel-copy">
-                    <h2>Flagship electronics, fashion picks, and same-day delivery promises.</h2>
-                    <p>Everything you need for high-conversion storefronts, shipped from a modern Laravel Blade commerce stack.</p>
+                    <h2>Top-rated electronics, sleek accessories, and next-day delivery.</h2>
+                    <p>High-performance commerce flows and curated product discovery, optimized for speed and clarity.</p>
                 </div>
                 <div class="hero-panel-countdown">
-                    <span>11h 14m 11s</span>
+                    <span class="countdown-label">Deal ends in</span>
+                    <strong>11h 14m 11s</strong>
                 </div>
             </div>
         </section>
@@ -90,11 +106,12 @@
                             <h3 class="product-title" style="margin-top:12px;">
                                 <a href="{{ route('products.show', $product) }}">{{ $product->name }}</a>
                             </h3>
+                            @php $reviewsCount = $product->reviews()->count(); @endphp
                             <div class="product-rating" style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-                                @if($product->rating)
+                                @if($reviewsCount > 0)
                                     <span style="color:#f59e0b;font-weight:700;">★ {{ number_format($product->rating, 1) }}</span>
                                 @endif
-                                <span class="helper">{{ $product->reviews()->count() }} Reviews</span>
+                                <span class="helper">{{ $reviewsCount }} Review{{ $reviewsCount === 1 ? '' : 's' }}</span>
                             </div>
                             <p class="product-meta">{{ $product->short_description }}</p>
                             <div class="price">

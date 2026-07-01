@@ -1,5 +1,4 @@
 @extends('layouts.app', ['title' => $product->name.' | Northstar', 'metaDescription' => $product->meta_description ?: $product->short_description])
-
 @section('content')
     <section class="product-layout">
         <div class="product-main">
@@ -34,7 +33,11 @@
                     </article>
                     <article class="panel" style="padding:20px;">
                         <strong>Customer rating</strong>
-                        <p class="section-subtitle">{{ number_format($product->rating, 1) }}/5 average rating from verified reviews.</p>
+                        @if($product->reviews->count() > 0)
+                            <p class="section-subtitle">{{ number_format($product->rating, 1) }}/5 average rating from verified reviews.</p>
+                        @else
+                            <p class="section-subtitle">No ratings yet — be the first to review this product.</p>
+                        @endif
                     </article>
                 </div>
             </section>
@@ -42,7 +45,8 @@
             <section class="section">
                 <div class="eyebrow">Ratings and reviews</div>
                 <h2>What customers say</h2>
-                <p class="helper">{{ $product->reviews->count() }} review{{ $product->reviews->count() === 1 ? '' : 's' }} · {{ number_format($product->rating, 1) }}/5 average</p>
+                @php $reviewsCount = $product->reviews->count(); @endphp
+                <p class="helper">{{ $reviewsCount }} review{{ $reviewsCount === 1 ? '' : 's' }}@if($reviewsCount > 0) · {{ number_format($product->rating, 1) }}/5 average@endif</p>
 
                 @auth
                     <form action="{{ route('products.reviews.store', $product) }}" method="post" class="panel" style="padding:20px;margin-bottom:18px;">
@@ -91,7 +95,10 @@
                     @forelse($product->reviews as $review)
                         <article class="review-card">
                             <strong>{{ $review->title ?: 'Verified customer review' }}</strong>
-                            <div class="helper">{{ $review->user?->name ?? 'Customer' }} | {{ $review->rating }}/5</div>
+                            <div class="helper">
+                                <span aria-label="{{ $review->rating }} out of 5 stars" style="color:#f59e0b;">{{ $review->star_label }}</span>
+                                <span style="margin-left:8px;">{{ $review->user?->name ?? 'Customer' }}</span>
+                            </div>
                             <p>{{ $review->body }}</p>
                         </article>
                     @empty
@@ -114,7 +121,7 @@
                     <span class="price-old">Rs. {{ number_format($product->compare_price, 2) }}</span>
                 @endif
             </div>
-            <div class="helper">In stock: {{ $product->stock }} units | {{ number_format($product->rating, 1) }}/5 rating</div>
+            <div class="helper">In stock: {{ $product->stock }} units@if($product->reviews->count() > 0) | {{ number_format($product->rating, 1) }}/5 rating@endif</div>
 
             <form action="{{ route('cart.store') }}" method="post" class="stack" style="margin-top:18px;">
                 @csrf

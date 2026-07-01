@@ -15,6 +15,14 @@ class Review extends Model
         'is_verified_purchase',
     ];
 
+    public function getStarLabelAttribute(): string
+    {
+        $filledStars = max(0, min(5, (int) round($this->rating)));
+        $emptyStars = 5 - $filledStars;
+
+        return str_repeat('★', $filledStars).str_repeat('☆', $emptyStars);
+    }
+
     protected function casts(): array
     {
         return [

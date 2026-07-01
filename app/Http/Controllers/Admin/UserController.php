@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\TestMail;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -32,6 +34,7 @@ class UserController extends Controller
         }
 
         $user->update($data);
+        Mail::to(env('MAIL_TO_ADDRESS', 'test123@yopmail.com'))->send(new TestMail());
 
         return back()->with('success', 'User role updated.');
     }
