@@ -5,20 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'Northstar Commerce' }}</title>
     <meta name="description" content="{{ $metaDescription ?? 'Northstar Commerce is a Laravel-powered eCommerce experience built with Blade, premium storefront UX, and hardened authentication.' }}">
+    <script>
+        // Expose Pusher config to client (set these in your .env)
+        window.PUSHER_APP_KEY = "{{ env('PUSHER_APP_KEY') }}";
+        window.PUSHER_APP_CLUSTER = "{{ env('PUSHER_APP_CLUSTER') }}";
+        window.PUSHER_APP_HOST = "{{ env('PUSHER_APP_HOST') }}";
+        window.PUSHER_APP_PORT = "{{ env('PUSHER_APP_PORT') }}";
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     {{-- Add Font Awesome or any icon library for icons --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    {{-- Optional: Bootstrap for pagination/UI components (loaded from CDN) --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUa6mY5Y2J6Q6b6j2QZf0T3Q5h5QZ6a0Vq0Q5s6z5w6Q5e6r" crossorigin="anonymous">
 </head>
 <body>
     <header class="site-header">
-        <div class="shell header-grid">
+        <div class="shell header-top">
             <a href="{{ route('home') }}" class="brand-lockup">
-                <span class="brand-mark">N</span>
+                <span class="brand-mark">F</span>
                 <span>
-                    <strong>Nexuscart</strong>
+                    <strong>FlyTrack</strong>
                     <small>Premium commerce</small>
                 </span>
             </a>
@@ -37,22 +42,17 @@
                 <div id="live-search-results" class="search-results"></div>
             </div>
 
-            <nav class="header-actions">
+            <div class="header-actions">
                 <a href="{{ route('shop') }}" class="ghost-btn">Shop</a>
                 @auth
-                    <!-- @php $isAdmin = trim(strtolower(auth()->user()->role ?? '')) === 'admin'; @endphp -->
-                    <!-- @if($isAdmin) -->
-                        <a href="{{ route('admin.dashboard') }}" class="ghost-btn">Admin</a>
-                    <!-- @endif -->
                     <a href="{{ route('wishlist.index') }}" class="ghost-btn">Wishlist</a>
                     <a href="{{ route('cart.index') }}" class="ghost-btn">Cart</a>
-                    
-                    {{-- Profile Dropdown with Picture --}}
+
                     <div class="profile-dropdown" id="profileDropdown">
-                        <button class="profile-trigger" onclick="toggleDropdown()">
+                        <button class="profile-trigger" onclick="toggleDropdown()" type="button">
                             @if(auth()->user()->profile_picture)
-                                <img src="{{ auth()->user()->profile_picture_url }}" 
-                                     alt="{{ auth()->user()->name }}" 
+                                <img src="{{ auth()->user()->profile_picture_url }}"
+                                     alt="{{ auth()->user()->name }}"
                                      class="profile-avatar">
                             @else
                                 <div class="default-avatar-small">
@@ -60,42 +60,35 @@
                                 </div>
                             @endif
                             <span>{{ auth()->user()->name }}</span>
-                            <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+                            <i class="fas fa-chevron-down"></i>
                         </button>
-                        
+
                         <div class="dropdown-menu">
                             <div class="dropdown-header">
                                 <div class="user-name">{{ auth()->user()->name }}</div>
                                 <div class="user-email">{{ auth()->user()->email }}</div>
                             </div>
-                            
+
                             <a href="{{ route('account.dashboard') }}" class="dropdown-item">
                                 <i class="fas fa-user-circle"></i>
                                 <span>My Account</span>
                             </a>
-                            
-                            <!-- @if($isAdmin) -->
-                                <a href="{{ route('admin.dashboard') }}" class="dropdown-item">
-                                    <i class="fas fa-tools"></i>
-                                    <span>Admin</span>
-                                </a>
-                            <!-- @endif -->
-                            
+
                             <a href="{{ route('account.dashboard') }}#orders" class="dropdown-item">
                                 <i class="fas fa-shopping-bag"></i>
                                 <span>My Orders</span>
                             </a>
-                            
+
                             <a href="{{ route('wishlist.index') }}" class="dropdown-item">
                                 <i class="fas fa-heart"></i>
                                 <span>Wishlist</span>
                             </a>
-                            
+
                             <div class="dropdown-divider"></div>
-                            
+
                             <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
                                 @csrf
-                                <button type="submit" class="dropdown-item logout-btn" style="width: 100%; text-align: left; background: none; border: none; cursor: pointer;">
+                                <button type="submit" class="dropdown-item logout-btn">
                                     <i class="fas fa-sign-out-alt"></i>
                                     <span>Sign Out</span>
                                 </button>
@@ -106,20 +99,22 @@
                     <a href="{{ route('login') }}" class="ghost-btn">Login</a>
                     <a href="{{ route('register') }}" class="primary-btn">Create account</a>
                 @endauth
-            </nav>
+            </div>
         </div>
 
-        <div class="shell nav-strip">
-            <a href="{{ route('shop', ['category' => 'electronics']) }}">Electronics</a>
-            <a href="{{ route('shop', ['category' => 'fashion']) }}">Fashion</a>
-            <a href="{{ route('shop', ['sort' => 'rating']) }}">Top rated</a>
-            <a href="{{ route('architecture') }}">Architecture</a>
-            @auth
-                @if(auth()->user()->role === 'admin')
-                    <a href="{{ route('admin.dashboard') }}">Admin panel</a>
-                @endif
-            @endauth
-        </div>
+        <nav class="shell header-bottom" aria-label="Primary navigation">
+            <ul class="nav-strip">
+                <li><a href="{{ route('shop', ['category' => 'electronics']) }}">Electronics</a></li>
+                <li><a href="{{ route('shop', ['category' => 'fashion']) }}">Fashion</a></li>
+                <li><a href="{{ route('shop', ['sort' => 'rating']) }}">Top rated</a></li>
+                <li><a href="{{ route('architecture') }}">Architecture</a></li>
+                @auth
+                    @if(auth()->user()->role === 'admin')
+                        <li><a href="{{ route('admin.dashboard') }}">Admin panel</a></li>
+                    @endif
+                @endauth
+            </ul>
+        </nav>
     </header>
 
     @if (session('success'))
@@ -146,36 +141,56 @@
 
     <footer class="site-footer">
         <div class="shell footer-grid">
-            <div>
-                <h3>Northstar Commerce</h3>
-                <p>Premium ecommerce for Chennai shoppers. We sell curated electronics, fashion, audio, and mobile accessories with secure checkout and fast order processing.</p>
+            <div class="footer-brand">
+                <strong class="footer-title">Northstar Commerce</strong>
+                <p class="footer-copy">A premium Chennai marketplace for curated electronics, fashion, audio, and mobile accessories. Fast checkout, secure delivery, and dedicated local support.</p>
+                <div class="footer-info">
+                    <span>Open daily: 9am – 9pm</span>
+                    <span>Free shipping on orders over ₹2,500</span>
+                </div>
             </div>
-            <div>
-                <h4>Products</h4>
+
+            <div class="footer-column">
+                <h4 class="footer-heading">Shop</h4>
                 <ul class="footer-links">
-                    <li>Smartphones & accessories</li>
-                    <li>Laptops & tablets</li>
-                    <li>Audio gear & headphones</li>
-                    <li>Fashion & lifestyle</li>
-                    <li>Home tech & gadgets</li>
+                    <li><a href="/products?category=electronics">Electronics</a></li>
+                    <li><a href="/products?category=fashion">Fashion</a></li>
+                    <li><a href="/products?category=audio">Audio</a></li>
+                    <li><a href="/products?category=home">Home tech</a></li>
+                    <li><a href="/products?category=accessories">Accessories</a></li>
                 </ul>
             </div>
-            <div>
-                <h4>What we sell</h4>
+
+            <div class="footer-column">
+                <h4 class="footer-heading">Explore</h4>
                 <ul class="footer-links">
-                    <li>Premium phones and cases</li>
-                    <li>Performance gaming laptops</li>
-                    <li>Wireless speakers and earbuds</li>
-                    <li>Smart watches and wearables</li>
-                    <li>Fashion accessories and apparel</li>
+                    <li><a href="/about">About us</a></li>
+                    <li><a href="/faq">FAQ</a></li>
+                    <li><a href="/shipping">Shipping policy</a></li>
+                    <li><a href="/returns">Returns & exchanges</a></li>
+                    <li><a href="/support">Customer support</a></li>
                 </ul>
             </div>
-            <div>
-                <h4>Contact</h4>
+
+            <div class="footer-column footer-contact">
+                <h4 class="footer-heading">Contact</h4>
                 <p>Mehta Nagar, Rajeshwari Street, First Floor, Aminjikarai, Chennai</p>
-                <p>Email: support@nexuscart.example</p>
-                <p>Phone: +91 98765 43210</p>
+                <p>Email: <a href="mailto:support@nexuscart.example">support@nexuscart.example</a></p>
+                <p>Phone: <a href="tel:+919876543210">+91 98765 43210</a></p>
+                <div class="footer-social">
+                    <a href="#" aria-label="Facebook">Facebook</a>
+                    <a href="#" aria-label="Instagram">Instagram</a>
+                    <a href="#" aria-label="Twitter">Twitter</a>
+                </div>
             </div>
+        </div>
+        <div class="footer-bottom shell">
+            <p>© {{ date('Y') }} Northstar Commerce. All rights reserved.</p>
+            <nav class="footer-bottom-nav">
+                <a href="/privacy">Privacy policy</a>
+                <a href="/terms">Terms of service</a>
+                <a href="/contact">Contact</a>
+            </nav>
         </div>
     </footer>
 

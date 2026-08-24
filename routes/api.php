@@ -20,6 +20,9 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/auth/me', [AuthController::class, 'me']);
         Route::post('/auth/logout-all', [AuthController::class, 'logoutAll']);
 
+        // Rider location updates (authenticated riders)
+        Route::post('/riders/me/location', [\App\Http\Controllers\Api\LocationController::class, 'update']);
+
         Route::get('/cart', [CommerceController::class, 'cart']);
         Route::post('/cart/items', [CommerceController::class, 'addToCart']);
         Route::get('/wishlist', [CommerceController::class, 'wishlist']);

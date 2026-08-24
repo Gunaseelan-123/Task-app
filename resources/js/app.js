@@ -3,6 +3,30 @@ import axios from 'axios';
 window.axios = axios;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
+// Initialize Laravel Echo + Pusher when PUSHER_APP_KEY is exposed on window (set via Blade layout)
+if (window.PUSHER_APP_KEY) {
+    // Dynamic import so build doesn't break when packages are missing during development
+    Promise.all([import('pusher-js'), import('laravel-echo')])
+        .then(([PusherModule, EchoModule]) => {
+            const Pusher = PusherModule.default ?? PusherModule;
+            const Echo = EchoModule.default ?? EchoModule;
+
+            window.Pusher = Pusher;
+            window.Echo = new Echo({
+                broadcaster: 'pusher',
+                key: window.PUSHER_APP_KEY,
+                cluster: window.PUSHER_APP_CLUSTER || undefined,
+                wsHost: window.PUSHER_APP_HOST || undefined,
+                wsPort: window.PUSHER_APP_PORT ? Number(window.PUSHER_APP_PORT) : undefined,
+                forceTLS: window.PUSHER_APP_PORT ? false : true,
+                encrypted: true,
+                enabledTransports: ['ws','wss'],
+            });
+        })
+        .catch(err => console.warn('Echo/Pusher initialization failed:', err));
+}
+
+
 document.querySelectorAll('[data-suggest-endpoint]').forEach((input) => {
     const endpoint = input.getAttribute('data-suggest-endpoint');
     const target = document.querySelector(input.getAttribute('data-target'));
@@ -20,12 +44,15 @@ document.querySelectorAll('[data-suggest-endpoint]').forEach((input) => {
         try {
             const { data } = await axios.get(`${endpoint}?q=${encodeURIComponent(input.value)}`);
             const items = data.data ?? data ?? [];
-
-            target.innerHTML = items.slice(0, 5).map((item) => `
-                <a href="/products/${item.slug}" class="search-result-item">
-                    <strong>${item.name}</strong>
-                    <span>Rs. ${Number(item.price).toLocaleString('en-IN')}</span>
-                </a>
+ 
+            // Filter out suggestions without a slug to avoid generating invalid URLs
+            const valid = items.filter(i => i && i.slug);
+ 
+            target.innerHTML = valid.slice(0, 5).map((item) => `
+               <a href="/products/${item.slug}" class="search-result-item">
+                   <strong>${item.name}</strong>
+                   <span>Rs. ${Number(item.price).toLocaleString('en-IN')}</span>
+               </a>
             `).join('');
         } catch (error) {
             target.innerHTML = '';
@@ -63,9 +90,16 @@ document.querySelectorAll('[data-countdown]').forEach((node) => {
 document.querySelectorAll('[data-gallery-thumb]').forEach((thumb) => {
     thumb.addEventListener('click', () => {
         const mainTarget = document.querySelector(thumb.getAttribute('data-gallery-target'));
-        if (mainTarget) {
-            mainTarget.src = thumb.getAttribute('src');
-        }
+        if (!mainTarget) return;
+
+        // The thumbnail is a button wrapping an <img>. Use the nested image's src.
+        const img = thumb.querySelector('img');
+        // Prefer an explicit full-size URL from data-full-src, otherwise use the nested img src.
+        const full = thumb.dataset && thumb.dataset.fullSrc ? thumb.dataset.fullSrc : null;
+        const newSrc = full || (img ? img.getAttribute('src') : thumb.getAttribute('src'));
+        if (!newSrc) return; // guard against null/undefined
+
+        mainTarget.src = newSrc;
     });
 });
 
@@ -317,3 +351,65 @@ document.querySelectorAll('[data-pincode-check]').forEach((button) => {
                 setTimeout(() => alert.remove(), 300);
             });
         }, 5000);
+
+        /* Live rider tracking integration
+         * - Rider devices should authenticate (sanctum) and call POST /api/v1/riders/me/location
+         * - Customers subscribe to Echo.channel('rider.{id}') and render markers on a Leaflet map
+         */
+
+        // Driver device: send periodic location updates when an element with data-driver-tracker exists
+        if (document.querySelector('[data-driver-tracker]')) {
+            if ('geolocation' in navigator) {
+                navigator.geolocation.watchPosition(async (pos) => {
+                    const payload = {
+                        latitude: pos.coords.latitude,
+                        longitude: pos.coords.longitude,
+                        heading: pos.coords.heading ?? null,
+                        speed: pos.coords.speed ?? null,
+                        accuracy: pos.coords.accuracy ?? null,
+                    };
+
+                    try {
+                        // Using Axios and Sanctum cookie auth (ensure session is authenticated or provide token)
+                        await axios.post('/api/v1/riders/me/location', payload);
+                    } catch (err) {
+                        console.error('Location update failed', err);
+                    }
+                }, (err) => {
+                    console.error('Geolocation error', err);
+                }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 });
+            } else {
+                console.warn('Geolocation not supported in this browser');
+            }
+        }
+
+        // Customer/Viewer: subscribe to rider.{id} channel and update a Leaflet map
+        if (typeof Echo !== 'undefined' && document.getElementById('live-tracking-map')) {
+            const mapEl = document.getElementById('live-tracking-map');
+            const riderId = mapEl.dataset.riderId;
+
+            // Ensure Leaflet (L) is loaded
+            if (typeof L !== 'undefined') {
+                // initialize map centered at India by default
+                const map = L.map('live-tracking-map').setView([20.5937, 78.9629], 6);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+
+                const riderMarker = L.marker([0,0]).addTo(map);
+
+                if (riderId) {
+                    Echo.channel('rider.' + riderId).listen('.RiderLocationUpdated', (e) => {
+                        const lat = e.latitude ?? e.location?.latitude;
+                        const lng = e.longitude ?? e.location?.longitude;
+                        if (!lat || !lng) return;
+
+                        riderMarker.setLatLng([lat, lng]);
+                        map.setView([lat, lng], 13);
+                    });
+                }
+            } else {
+                console.warn('Leaflet not loaded: include leaflet.js and leaflet.css in the page to render maps');
+            }
+        }

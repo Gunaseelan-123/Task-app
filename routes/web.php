@@ -21,6 +21,19 @@ Route::get('/products/{product:slug}', [StorefrontController::class, 'product'])
 Route::get('/search/suggestions', [StorefrontController::class, 'searchSuggestions'])->name('search.suggestions');
 Route::get('/architecture', [StorefrontController::class, 'architecture'])->name('architecture');
 
+// Quick test routes for live location tracking
+Route::middleware('auth')->group(function () {
+    // Rider device page: authenticated rider opens this to send location updates
+    Route::get('/rider/tracker', function () {
+        return view('store.rider-tracker');
+    })->name('rider.tracker');
+
+    // Customer tracking view: subscribe to a rider's channel (replace with order->rider mapping in production)
+    Route::get('/track/rider/{rider}', function (\App\Models\User $rider) {
+        return view('store.track-rider', ['rider' => $rider]);
+    })->name('track.rider');
+});
+
 Route::middleware('guest')->group(function (): void {
 
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

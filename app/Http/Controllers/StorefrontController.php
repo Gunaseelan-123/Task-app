@@ -76,6 +76,8 @@ class StorefrontController extends Controller
         return response()->json(
             Product::query()
                 ->where('is_active', true)
+                ->whereNotNull('slug')
+                ->where('slug', '<>', '')
                 ->where(function ($query) use ($request): void {
                     $query
                         ->where('name', 'like', '%'.$request->q.'%')
