@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'Admin | Northstar' }}</title>
+    <title>{{ $title ?? 'Admin | Flytrack' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="admin-body">
     <div class="admin-layout">
         <aside class="admin-sidebar">
             <a href="{{ route('admin.dashboard') }}" class="brand-lockup brand-lockup--light">
-                <span class="brand-mark">N</span>
+                <span class="brand-mark">F</span>
                 <span>
-                    <strong>Northstar</strong>
-                    <small>Admin control</small>
+                    <strong>Flytrack</strong>
                 </span>
             </a>
             <nav class="admin-nav">
