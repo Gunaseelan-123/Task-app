@@ -256,6 +256,10 @@ class AuthController extends Controller
             'logged_in_at' => now(),
         ]);
 
-        $user->notify(new LoginAlertNotification($alert));
+        try {
+            $user->notify(new LoginAlertNotification($alert));
+        } catch (\Throwable $exception) {
+            report($exception);
+        }
     }
 }

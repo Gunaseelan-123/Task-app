@@ -17,6 +17,16 @@ class LoginAlertNotification extends Notification
 
     public function via(object $notifiable): array
     {
+        $mailDriver = config('mail.default');
+
+        if ($mailDriver === 'log' || $mailDriver === 'array') {
+            return ['mail'];
+        }
+
+        if (empty(config('mail.mailers.smtp.host')) && $mailDriver === 'smtp') {
+            return ['database'];
+        }
+
         return ['mail'];
     }
 
