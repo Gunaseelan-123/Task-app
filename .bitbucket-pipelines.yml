@@ -1,0 +1,22 @@
+image: php:8.2-cli
+
+pipelines:
+  branches:
+    main:
+      - step:
+          name: Laravel CI
+          caches:
+            - composer
+          script:
+            - apt-get update && apt-get install -y git unzip libzip-dev
+            - docker-php-ext-install zip
+            - php -v
+            - php -m
+            - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+            - composer --version
+            - composer install --no-interaction --prefer-dist --optimize-autoloader
+            - cp .env.example .env
+            - php artisan key:generate
+            - php artisan config:clear
+            - php artisan cache:clear
+            - php artisan test
